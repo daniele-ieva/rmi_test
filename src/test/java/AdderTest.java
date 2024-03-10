@@ -60,4 +60,25 @@ public class AdderTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    public void testMultipleClients() {
+        for (int i = 0; i < 10; i++) {
+            new Thread(() -> {
+                try (Client client = new Client()){
+                    int sum = 0;
+                    int rand;
+                    for (int j = 0; j < 100; j++) {
+                        // Number chosen to avoid overflow
+                        rand = ThreadLocalRandom.current().nextInt(100_000);
+                        sum += rand;
+                        client.add(rand);
+                    }
+                    Assertions.assertEquals(sum, client.result());
+                } catch (NotBoundException | InterruptedException | RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+        }
+    }
 }
