@@ -33,4 +33,21 @@ public class AdderTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    public void testMultipleAdd() {
+        try (Client client = new Client()){
+            int sum = 0;
+            int rand;
+            for (int i = 0; i < 100; i++) {
+                // Number chosen to avoid overflow
+                rand = ThreadLocalRandom.current().nextInt(100_000);
+                sum += rand;
+                client.add(rand);
+            }
+            Assertions.assertEquals(sum, client.result());
+        } catch (NotBoundException | InterruptedException | RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
