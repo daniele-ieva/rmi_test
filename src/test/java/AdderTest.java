@@ -1,6 +1,7 @@
 import org.example.ChainAdder;
 import org.example.ChainAdderRemote;
 import org.example.Client;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,11 +10,20 @@ import java.rmi.RemoteException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AdderTest {
-    private final ChainAdder server = new ChainAdderRemote();
+    private final static ChainAdder server;
 
-    public AdderTest() throws RemoteException {
+    static {
+        try {
+            server = new ChainAdderRemote();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    @AfterAll
+    public static void closeServer() throws RemoteException {
+        server.stop();
+    }
     @Test
     public void testClientInitializer() {
         try (Client client = new Client()){

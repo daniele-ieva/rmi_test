@@ -1,5 +1,6 @@
 package org.example;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -10,6 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChainAdderRemote implements ChainAdder {
     public static final String name ="adder";
+
+    public ChainAdderRemote() throws RemoteException {
+        System.out.println("Starting server...");
+        ChainAdder stub = (ChainAdder) UnicastRemoteObject.exportObject(this, 0);
+        registry = LocateRegistry.createRegistry(1099);
+        registry.rebind(name, stub);
+        System.out.println("Started!");
+    }
     @Override
     public Integer result(UUID id) throws RemoteException {
         synchronized (result) {
@@ -55,14 +64,16 @@ public class ChainAdderRemote implements ChainAdder {
         }
     }
 
-    public ChainAdderRemote() throws RemoteException {
-        System.out.println("Starting server...");
-        ChainAdder stub = (ChainAdder) UnicastRemoteObject.exportObject(this, 0);
-        Registry registry = LocateRegistry.createRegistry(1099);
-        registry.rebind(name, stub);
-        System.out.println("Started!");
+    @Override
+    public void stop() {
+        try {
+            registry.unbind(name);
+        } catch (RemoteException | NotBoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final Map<UUID, Integer> result = new ConcurrentHashMap<>();
+    private final Registry registry;
     private volatile int connections = 0;
 }
