@@ -26,7 +26,7 @@ public class ChainAdderRemote implements ChainAdder {
         synchronized (result) {
             connections++;
             System.out.println("connection started with " + client);
-            System.out.printf("There are %d connections active\n", connections);
+            System.out.printf("There are [%d] connections active\n", connections);
             result.put(client, 0);
         }
         return client;
@@ -37,7 +37,7 @@ public class ChainAdderRemote implements ChainAdder {
         System.out.println("Connection closed with " + id);
         synchronized (result) {
             connections--;
-            System.out.printf("There are %d connections active\n", connections);
+            System.out.printf("There are [%d] connections active\n", connections);
             result.remove(id);
         }
     }
