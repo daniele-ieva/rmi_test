@@ -14,7 +14,18 @@ public class App {
                 spawn_server();
                 break;
             case "test":
-                spawn_test(10);
+                int iter;
+                if (args.length < 2) {
+                    iter = 10;
+                }
+                else {
+                    try {
+                        iter = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException e) {
+                        iter = 10;
+                    }
+                }
+                spawn_test(iter);
                 break;
             case "client":
                 spawn_client();
