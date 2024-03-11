@@ -11,6 +11,11 @@ To start the client
 ~~~shell
 java -jar ./rmi_test-1.0.jar client
 ~~~
+or
+~~~
+java -jar ./rmi_test-1.0.jar client [server_ip]
+~~~
+
 the available commands are:
 ~~~
 add [number]
