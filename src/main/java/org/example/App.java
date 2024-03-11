@@ -11,7 +11,14 @@ public class App {
 
         switch (args[0]) {
             case "server":
-                spawn_server();
+                int port = 42069;
+                if (args.length > 1) {
+                    try {
+                        port = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+                spawn_server(port);
                 break;
             case "test":
                 int iter;
@@ -39,8 +46,8 @@ public class App {
         }
     }
 
-    private static void spawn_server() throws RemoteException {
-        new ChainAdderRemote();
+    private static void spawn_server(int port) throws RemoteException {
+        new ChainAdderRemote(port);
     }
 
     private static void spawn_test(int count) {
@@ -64,68 +71,49 @@ public class App {
     }
 
     private static void spawn_client() {
-            boolean running = true;
-            Scanner in = new Scanner(System.in);
-            String input;
-            int val;
-            try (Client client = new Client()) {
-                while (running) {
-                    input = in.nextLine();
-                    if (input.contains("close")) {
-                        running = false;
-                        continue;
-                    }
-                    if (input.contains("result")) {
-                        System.out.println(client.result());
-                        continue;
-                    }
-                    if (input.contains("add")) {
-                        try {
-                            val = Integer.parseInt(input.split(" ")[1]);
-                            client.add(val);
-                        } catch (NumberFormatException e) {
-                            continue;
-                        }
-                        continue;
-                    }
-                    System.out.println("Unknown Command!");
-                }
-            } catch (RemoteException | NotBoundException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
+        boolean running = true;
+        Scanner in = new Scanner(System.in);
+        try (Client client = new Client()) {
+                mainLoop(running, in, client);
+        } catch (RemoteException | NotBoundException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
+    }
 
     private static void spawn_client(String ip) {
         boolean running = true;
         Scanner in = new Scanner(System.in);
-        String input;
-        int val;
         try (Client client = new Client(ip)) {
-            while (running) {
-                input = in.nextLine();
-                if (input.contains("close")) {
-                    running = false;
-                    continue;
-                }
-                if (input.contains("result")) {
-                    System.out.println(client.result());
-                    continue;
-                }
-                if (input.contains("add")) {
-                    try {
-                        val = Integer.parseInt(input.split(" ")[1]);
-                        client.add(val);
-                    } catch (NumberFormatException e) {
-                        continue;
-                    }
-                    continue;
-                }
-                System.out.println("Unknown Command!");
-            }
+            mainLoop(running, in, client);
         } catch (RemoteException | NotBoundException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private static void mainLoop(boolean running, Scanner in, Client client) throws RemoteException {
+        String input;
+        int val;
+        while (running) {
+            input = in.nextLine();
+            if (input.contains("close")) {
+                running = false;
+                continue;
+            }
+            if (input.contains("result")) {
+                System.out.println(client.result());
+                continue;
+            }
+            if (input.contains("add")) {
+                try {
+                    val = Integer.parseInt(input.split(" ")[1]);
+                    client.add(val);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+                continue;
+            }
+            System.out.println("Unknown Command!");
+        }
     }
 }

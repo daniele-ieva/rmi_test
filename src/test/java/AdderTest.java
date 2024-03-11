@@ -14,7 +14,7 @@ public class AdderTest {
 
     static {
         try {
-            server = new ChainAdderRemote();
+            server = new ChainAdderRemote(0);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

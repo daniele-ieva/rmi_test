@@ -13,9 +13,9 @@ public class ChainAdderRemote implements ChainAdder {
     public static final String name ="adder";
     public static final Integer max_connections = 16;
 
-    public ChainAdderRemote() throws RemoteException {
+    public ChainAdderRemote(int port) throws RemoteException {
         System.out.println("Starting server...");
-        ChainAdder stub = (ChainAdder) UnicastRemoteObject.exportObject(this, 0);
+        ChainAdder stub = (ChainAdder) UnicastRemoteObject.exportObject(this, port);
         registry = LocateRegistry.createRegistry(1099);
         registry.rebind(name, stub);
         System.out.println("Started!");
