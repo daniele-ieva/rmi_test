@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AdderTest {
-    private final static ChainAdder server;
+    private final static ChainAdderRemote server;
 
     static {
         try {
@@ -21,7 +21,7 @@ public class AdderTest {
     }
 
     @AfterAll
-    public static void closeServer() throws RemoteException {
+    public static void closeServer() {
         server.stop();
     }
     @Test

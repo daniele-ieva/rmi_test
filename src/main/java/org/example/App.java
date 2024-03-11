@@ -28,6 +28,10 @@ public class App {
                 spawn_test(iter);
                 break;
             case "client":
+                if (args.length > 1) {
+                    spawn_client(args[1]);
+                    break;
+                }
                 spawn_client();
                 break;
             default:
@@ -59,7 +63,7 @@ public class App {
         }
     }
 
-        private static void spawn_client() {
+    private static void spawn_client() {
             boolean running = true;
             Scanner in = new Scanner(System.in);
             String input;
@@ -91,4 +95,37 @@ public class App {
             }
 
         }
+
+    private static void spawn_client(String ip) {
+        boolean running = true;
+        Scanner in = new Scanner(System.in);
+        String input;
+        int val;
+        try (Client client = new Client(ip)) {
+            while (running) {
+                input = in.nextLine();
+                if (input.contains("close")) {
+                    running = false;
+                    continue;
+                }
+                if (input.contains("result")) {
+                    System.out.println(client.result());
+                    continue;
+                }
+                if (input.contains("add")) {
+                    try {
+                        val = Integer.parseInt(input.split(" ")[1]);
+                        client.add(val);
+                    } catch (NumberFormatException e) {
+                        continue;
+                    }
+                    continue;
+                }
+                System.out.println("Unknown Command!");
+            }
+        } catch (RemoteException | NotBoundException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

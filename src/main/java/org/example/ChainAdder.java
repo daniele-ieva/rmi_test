@@ -11,6 +11,4 @@ public interface ChainAdder extends Remote {
 
     UUID getUUID() throws RemoteException;
     void close(UUID id) throws RemoteException;
-
-    void stop() throws RemoteException;
 }

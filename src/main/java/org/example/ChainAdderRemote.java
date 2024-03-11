@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChainAdderRemote implements ChainAdder {
     public static final String name ="adder";
+    public static final Integer max_connections = 16;
 
     public ChainAdderRemote() throws RemoteException {
         System.out.println("Starting server...");
@@ -30,15 +31,18 @@ public class ChainAdderRemote implements ChainAdder {
     }
 
     @Override
-    public synchronized UUID getUUID() {
-        UUID client = UUID.randomUUID();
+    public  UUID getUUID() {
         synchronized (result) {
+            if (connections == max_connections) {
+                return null;
+            }
+            UUID client = UUID.randomUUID();
             connections++;
             System.out.println("connection started with " + client);
             System.out.printf("There are [%d] connections active\n", connections);
             result.put(client, 0);
+            return client;
         }
-        return client;
     }
 
     @Override
@@ -64,7 +68,6 @@ public class ChainAdderRemote implements ChainAdder {
         }
     }
 
-    @Override
     public void stop() {
         try {
             registry.unbind(name);
