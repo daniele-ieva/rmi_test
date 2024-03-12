@@ -12,6 +12,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mainClass>org.example.App</mainClass>
     </properties>
 
     <dependencies>
@@ -27,6 +28,11 @@
             <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.5.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -38,7 +44,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.App</mainClass>
+                            <mainClass>${mainClass}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

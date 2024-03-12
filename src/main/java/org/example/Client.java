@@ -21,9 +21,10 @@ public class Client implements AutoCloseable {
         server = (ChainAdder) registry.lookup(ChainAdderRemote.name);
         id = server.getUUID();
         while (id == null) {
-            Thread.sleep(500);
+            Thread.sleep(1000);
             id = server.getUUID();
         }
+        addShutdownHook();
     }
 
     public Client(String ip) throws RemoteException, NotBoundException, InterruptedException {
@@ -31,9 +32,10 @@ public class Client implements AutoCloseable {
         server = (ChainAdder) registry.lookup(ChainAdderRemote.name);
         id = server.getUUID();
         while (id == null) {
-            Thread.sleep(500);
+            Thread.sleep(1000);
             id = server.getUUID();
         }
+        addShutdownHook();
     }
 
     public Client add(int value) throws RemoteException {
@@ -45,6 +47,12 @@ public class Client implements AutoCloseable {
 
     public int result() throws RemoteException {
         return server.result(id);
+    }
+
+    private void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(
+                this::close
+        ));
     }
 
     private final ChainAdder server;
