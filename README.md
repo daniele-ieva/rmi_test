@@ -26,7 +26,7 @@ close
 ## Test
 To test N random clients
 ~~~shell
-java -jar ./rmi_test-1.0.jar [N]
+java -jar ./rmi_test-1.0.jar test [N]
 ~~~
 
 # Build
